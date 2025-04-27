@@ -18,14 +18,13 @@ import Post from "./Post/Post";
         token: myCookies.get('userToken')?.value || '',
       }
     });
-
     const finalRes = await res.json();
     console.log("post",finalRes.posts);  // Fixed this line
     return finalRes.posts;
-
-
   }
+
   const allPosts :PostType[] = await getAllposts();
+  console.log("allPosts",allPosts);  
 
   return (
     <Box component='section'>

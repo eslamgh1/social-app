@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "_/*": ["./src/*"]
+      "_/*": ["./src/*"],
+      "@images/*": ["./src/assets/Images/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/_components/LoginForm/LoginForm.types.ts"],

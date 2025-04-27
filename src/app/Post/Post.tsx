@@ -17,7 +17,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { PostType } from '../_interfaces/posts.types';
 import Image from 'next/image'
-
+import { Box, InputAdornment, OutlinedInput, TextField } from '@mui/material';
+// import staticImage from "../../assets/Images/profile.jpg"
+import staticImage from "@images/profile.jpg"
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
@@ -55,21 +57,39 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 //~ Now postDetails is available as a variable
 //~ }
 
-
 export default function Post({ postDetails }: PostProps) {
   // const [expanded, setExpanded] = React.useState(false);
-
   // const handleExpandClick = () => {
   //   setExpanded(!expanded);
   // };
+
+  const hasComments = !!postDetails.comments[0]
+  const firstComment = postDetails.comments?.[0]
+
+  function getUserImage(imgSrc: string) {
+    if (!imgSrc) {
+      return staticImage;
+    }
+
+
+    // "https://linked-posts.routemisr.com/uploads/undefined"
+    const pathSegments = imgSrc.split("/");
+    const lastSegments = pathSegments[pathSegments.length - 1]
+    if (lastSegments === "undefined") {
+      return staticImage;
+    }
+    // Return original imgSrc if valid
+    return imgSrc;
+
+  }
 
   return (
     <Card sx={{ width: '100%' }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            <Image 
-            width={30}
+            <Image
+              width={30}
               height={30}
               src={postDetails.user.photo}
               alt="Picture of the author" />
@@ -89,28 +109,41 @@ export default function Post({ postDetails }: PostProps) {
           {postDetails.body}
         </Typography>
       </CardContent>
-      <CardMedia
+
+      {/* !!  convert the falue to true or false */}
+      {!!postDetails.image && <CardMedia
         component="img"
         height="194"
         image={postDetails.image}
 
         alt="Paella dish"
-      />
+      />}
 
 
+      <Box component='div' sx={{ padding: '10px' }}>
+        <OutlinedInput
+          fullWidth
+          id="outlined-adornment-weight"
+          endAdornment={<InputAdornment position="end">Comment</InputAdornment>}
+          aria-describedby="outlined-weight-helper-text"
+          inputProps={{
+            'aria-label': 'Comment',
+          }}
+        />
+      </Box>
 
       <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />
         </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
 
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>
 
+        <IconButton aria-label="share">
+          <ShareIcon />
+        </IconButton>
 
         {/* <ExpandMore
           expand={expanded}
@@ -121,6 +154,40 @@ export default function Post({ postDetails }: PostProps) {
           <ExpandMoreIcon />
         </ExpandMore> */}
       </CardActions>
+      {/* Comments part */}
+
+      <Box component={'section'}>
+        {hasComments && <Box>
+
+          <CardHeader
+            avatar={
+              <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                <Image
+                  width={30}
+                  height={30}
+
+                  src={getUserImage(firstComment.commentCreator.photo)}
+                  alt={firstComment.commentCreator.name} />
+              </Avatar>
+            }
+            action={
+              <IconButton aria-label="settings">
+                <MoreVertIcon />
+              </IconButton>
+            }
+            title={firstComment.commentCreator.photo}
+            subheader={firstComment.createdAt}
+          />
+
+          <CardContent>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              {firstComment.content}
+            </Typography>
+          </CardContent>
+        </Box>
+        }
+      </Box>
+
 
       {/* <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
